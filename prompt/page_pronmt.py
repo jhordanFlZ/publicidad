@@ -321,7 +321,6 @@ const { chromium } = require('playwright');
     }
 
     await page.bringToFront();
-<<<<<<< HEAD
 
     let sessionPages = await ensureSingleChatAndDebugPage(page);
     page = sessionPages.keepPage;
@@ -335,9 +334,6 @@ const { chromium } = require('playwright');
     sessionPages = await ensureSingleChatAndDebugPage(page);
     page = sessionPages.keepPage;
     await page.bringToFront();
-=======
-    await page.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded' });
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
 
     const selectors = [
       'div#prompt-textarea[contenteditable="true"]',
@@ -357,7 +353,6 @@ const { chromium } = require('playwright');
         .replace(/\s+/g, ' ')
         .trim();
 
-<<<<<<< HEAD
     const composerReadyInPage = async () => {
       return await page.evaluate(() => {
         const editor = document.querySelector('div#prompt-textarea[contenteditable="true"], #prompt-textarea[contenteditable="true"]');
@@ -374,8 +369,6 @@ const { chromium } = require('playwright');
       }).catch(() => false);
     };
 
-=======
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
     const waitForComposerReady = async (timeoutMs = 30000) => {
       await page.waitForFunction(() => {
         const editor = document.querySelector('div#prompt-textarea[contenteditable="true"], #prompt-textarea[contenteditable="true"]');
@@ -392,7 +385,6 @@ const { chromium } = require('playwright');
       }, { timeout: timeoutMs });
     };
 
-<<<<<<< HEAD
     const disableAdvancedResearchMode = async () => {
       const candidates = [
         page.getByRole('button', { name: /Investigaci[oó]n avanzada, pulsa para quitar/i }).first(),
@@ -420,8 +412,6 @@ const { chromium } = require('playwright');
       return false;
     };
 
-=======
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
     const findVisiblePromptInput = async (timeoutMs = 15000) => {
       const deadline = Date.now() + timeoutMs;
       while (Date.now() < deadline) {
@@ -441,7 +431,6 @@ const { chromium } = require('playwright');
       return null;
     };
 
-<<<<<<< HEAD
     try {
       await waitForComposerReady();
     } catch {
@@ -459,9 +448,6 @@ const { chromium } = require('playwright');
     }
     await disableAdvancedResearchMode();
 
-=======
-    await waitForComposerReady();
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
     const target = await findVisiblePromptInput();
     if (!target) throw new Error('No se encontro input visible de prompt');
 
@@ -492,70 +478,10 @@ const { chromium } = require('playwright');
         }
       }, handle);
     };
-<<<<<<< HEAD
 
     const clearPromptSurface = async () => {
       const handle = await target.elementHandle();
       if (!handle) throw new Error('No se pudo resolver el editor de prompt');
-=======
-    const normalizeText = (value) =>
-      String(value || '')
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-    const noImageTokenPhrases = [
-      'has alcanzado tu limite de creacion de imagenes',
-      'el limite se restablece',
-      'youve hit the team plan limit for image generations requests',
-      'you can create more images when the limit resets',
-      'no pude invocar la herramienta de generacion de imagenes',
-      'cannot generate more images',
-      'image generation limit'
-    ];
-
-    const waitForNoImageTokensAlert = async (timeoutMs = 12000) => {
-      const domSignals = [
-        page.getByRole('heading', { name: /Has alcanzado tu límite de creación de imágenes/i }),
-        page.getByRole('button', { name: /notificar al administrador/i }),
-        page.getByText(/You've hit the team plan limit for image generations requests/i),
-        page.getByText(/No pude invocar la herramienta de generación de imágenes/i),
-      ];
-      const deadline = Date.now() + timeoutMs;
-      while (Date.now() < deadline) {
-        for (const signal of domSignals) {
-          const visible = await signal.first().isVisible().catch(() => false);
-          if (visible) {
-            return true;
-          }
-        }
-
-        const bodyText = normalizeText(await page.evaluate(() => document.body?.innerText || ''));
-        if (noImageTokenPhrases.some((phrase) => bodyText.includes(phrase))) {
-          return true;
-        }
-        await page.waitForTimeout(500);
-      }
-      return false;
-    };
-
-    if (await waitForNoImageTokensAlert()) {
-      console.log('Sin tokens para imgs.');
-    }
-
-    // Asegura una pestana de debug visible y limpia el resto.
-    let debugPage = context.pages().find(p => isDebugPage(p.url()));
-    if (!debugPage) {
-      debugPage = await context.newPage();
-      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
-    } else {
-      await debugPage.bringToFront();
-      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
-    }
->>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
       await page.evaluate((el) => {
         el.focus();
