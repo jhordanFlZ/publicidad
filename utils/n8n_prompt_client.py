@@ -27,14 +27,27 @@ DEFAULT_BRAND_HINT = (
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PROMPT_FILE = PROJECT_ROOT / "utils" / "prontm.txt"
+DEFAULT_IDEA_FILE = PROJECT_ROOT / "utils" / "prompt_seed.txt"
 DEFAULT_WEBHOOK_URL = "https://n8n-dev.noyecode.com/webhook/py-prompt-imgs"
+<<<<<<< HEAD
 >>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+=======
+DEFAULT_BRAND_HINT = (
+    "Pieza publicitaria para NoyeCode enfocada en captar clientes reales de software. "
+    "Debe verse premium, moderna, comercial, confiable y lista para campanas digitales. "
+    "El texto dentro de la imagen si es importante porque estas piezas son para redes sociales y captacion comercial. "
+    "Incluir copy comercial claro, CTA, web, WhatsApp y el servicio protagonista cuando el formato lo permita. "
+    "Evitar imagenes genericas, pantallas gigantes irreales, cascos VR innecesarios, slogans confusos o logos invasivos dentro de la imagen. "
+    "Bogota y Kennedy pueden existir como contexto sutil, pero nunca como protagonista visual principal."
+)
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
 
 class N8NPromptError(RuntimeError):
     pass
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 SERVICE_HASHTAGS = {
     "desarrollo a la medida": "#NoyeCode #DesarrolloALaMedida #SoftwareEmpresarial #Colombia",
@@ -68,6 +81,8 @@ def looks_like_generic_service_seed(text: str) -> bool:
     return any(marker in lower for marker in markers) or service_hits >= 3
 
 
+=======
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 def clean_generated_prompt(prompt: str) -> str:
     text = " ".join(str(prompt).strip().split())
     lower = text.lower()
@@ -79,6 +94,7 @@ def clean_generated_prompt(prompt: str) -> str:
             text = text[idx + len(marker):].strip()
             break
 
+<<<<<<< HEAD
     text = text.strip(" -\n\r\t")
 
     lower = text.lower()
@@ -129,6 +145,9 @@ def clean_generated_prompt(prompt: str) -> str:
         "GENERA LA IMAGEN DIRECTAMENTE EN CALIDAD 4K, FORMATO VERTICAL 4:5 OPTIMIZADO PARA FEED DE FACEBOOK E INSTAGRAM, "
         "ESTILO PUBLICITARIO PREMIUM, ALTA CLARIDAD GRAFICA Y RESPETANDO MARGENES DE SEGURIDAD PARA QUE NINGUN TEXTO O ELEMENTO CLAVE QUEDE CORTADO EN LOS BORDES."
     ).strip()
+=======
+    return text.strip(" -\n\r\t")
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
 
 def detect_primary_service(text: str) -> str:
@@ -145,6 +164,7 @@ def detect_primary_service(text: str) -> str:
         return "desarrollo desktop"
     if "automatiza" in lower or "automatizacion" in lower or "automatizaciones" in lower:
         return "automatizaciones empresariales"
+<<<<<<< HEAD
     return ""
 
 
@@ -155,11 +175,19 @@ def select_primary_service(text: str) -> str:
     if detected:
         return detected
     return rotate_service()
+=======
+    return "desarrollo a la medida"
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
 
 def enrich_idea(idea: str) -> str:
     base = " ".join(idea.strip().split())
+<<<<<<< HEAD
     primary_service = select_primary_service(base)
+=======
+    lower = base.lower()
+    primary_service = detect_primary_service(base)
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
     hints: list[str] = [DEFAULT_BRAND_HINT]
 
     hints.append(
@@ -183,6 +211,7 @@ def enrich_idea(idea: str) -> str:
         "La pieza debe sentirse como arte publicitario para redes sociales de NoyeCode, orientado a conversion y captacion de clientes."
     )
     hints.append(
+<<<<<<< HEAD
         "Formato obligatorio: vertical 4:5 optimizado para feed de Facebook e Instagram, con composicion pensada para verse completa al publicarse."
     )
     hints.append(
@@ -201,17 +230,24 @@ def enrich_idea(idea: str) -> str:
         "El resultado debe parecer una pieza de agencia para Meta Ads: mas limpio, mas aspiracional, mas creible y mejor balanceado visualmente."
     )
     hints.append(
+=======
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         "Incluir dentro de la imagen un bloque de texto publicitario corto y bien jerarquizado con: nombre del servicio, beneficio principal, CTA, sitio web noyecode.com y WhatsApp +57 301 385 9952."
     )
     hints.append(
         f"El nombre del servicio destacado dentro del arte debe ser exactamente: {primary_service}."
     )
     hints.append(
+<<<<<<< HEAD
         f"Cuando encaje con formato de redes, incluir hashtags comerciales discretos como {SERVICE_HASHTAGS.get(primary_service, '#NoyeCode #SoftwareEmpresarial #Colombia')}."
+=======
+        "Cuando encaje con formato de redes, incluir hashtags comerciales discretos como #NoyeCode #DesarrolloALaMedida #AutomatizacionEmpresarial #SoftwareEmpresarial #Bogota #Colombia."
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
     )
     hints.append(
         "Si se listan servicios complementarios, deben ir en segundo nivel visual y nunca opacar el servicio principal."
     )
+<<<<<<< HEAD
     hints.append(
         "Salida obligatoria: devolver una sola instruccion final lista para pegar en ChatGPT y generar la imagen de inmediato."
     )
@@ -232,6 +268,10 @@ def enrich_idea(idea: str) -> str:
     )
 
     if primary_service == "desarrollo a la medida":
+=======
+
+    if "desarrollo a la medida" in lower or "a la medida" in lower:
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         hints.append(
             "Servicio clave: desarrollo a la medida. "
             "Mostrar una solucion de software creada especificamente para una empresa: "
@@ -251,24 +291,35 @@ def enrich_idea(idea: str) -> str:
         hints.append(
             "El texto recomendado dentro del arte debe resaltar ideas como: desarrollo a la medida, software personalizado, escalable, soporte experto, contactanos por WhatsApp, visita noyecode.com."
         )
+<<<<<<< HEAD
         hints.append(
             "Para esta escena, usar una composicion mas editorial y premium: menos personas si hace falta, un foco principal claro, mejor aire visual y texto mejor distribuido en zona segura."
         )
 
     if primary_service == "automatizaciones empresariales":
+=======
+
+    if "automatiza" in lower or "automatizacion" in lower or "automatizaciones" in lower:
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         hints.append(
             "Si la pieza es sobre automatizaciones, reflejar eficiencia operativa, integraciones entre sistemas, "
             "flujos conectados, paneles de control y ahorro de tiempo para empresas."
         )
+<<<<<<< HEAD
         hints.append(
             "Variar la escena entre procesos empresariales, equipos operando con menos friccion, tableros reales, integraciones activas y resultados visibles de ahorro de tiempo."
         )
 
     if primary_service == "desarrollo android":
+=======
+
+    if "android" in lower:
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         hints.append(
             "Si la pieza es sobre desarrollo Android, mostrar app movil profesional en uso real, "
             "interfaz pulida, experiencia de usuario clara y contexto comercial."
         )
+<<<<<<< HEAD
         hints.append(
             "Evitar la oficina tradicional como unica escena. Priorizar manos usando el movil, pantallas reales de app y contexto de negocio o ventas."
         )
@@ -277,20 +328,30 @@ def enrich_idea(idea: str) -> str:
         )
 
     if primary_service == "desarrollo desktop":
+=======
+
+    if "desktop" in lower or "desk" in lower:
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         hints.append(
             "Si la pieza es sobre desarrollo desktop, mostrar una aplicacion empresarial robusta en escritorio, "
             "paneles limpios, productividad, control operativo y entorno profesional."
         )
+<<<<<<< HEAD
         hints.append(
             "Cambiar la escena hacia uso de software en operacion, control de procesos, estaciones de trabajo y valor empresarial medible."
         )
 
     if primary_service == "modernizacion de software legacy":
+=======
+
+    if "legacy" in lower or "sistema legacy" in lower or "modernizacion" in lower or "actualizacion de sistema" in lower:
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
         hints.append(
             "Si la pieza trata de modernizacion legacy, representar evolucion tecnologica: "
             "antes y despues sutil, software antiguo transformandose en plataforma moderna, "
             "sin verse caotico ni demasiado tecnico."
         )
+<<<<<<< HEAD
         hints.append(
             "Enfatizar migracion, actualizacion, continuidad operativa y modernizacion visual del sistema."
         )
@@ -305,12 +366,17 @@ def enrich_idea(idea: str) -> str:
         hints.append(
             "Evitar robots humanoides. Representar el RPA como inteligencia operativa aplicada al negocio."
         )
+=======
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
     return f"{base}\n\nDirectrices internas para enriquecer la escena:\n- " + "\n- ".join(hints)
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+=======
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 def _read_json_response(resp: Any) -> dict[str, Any]:
     raw = resp.read().decode("utf-8", errors="replace").strip()
     if not raw:
@@ -333,6 +399,7 @@ def generate_prompt(
     if not idea:
         raise ValueError("La idea base no puede estar vacia")
 <<<<<<< HEAD
+<<<<<<< HEAD
     enriched_idea = enrich_idea(idea)
 
     payload = json.dumps({"text": enriched_idea}, ensure_ascii=False).encode("utf-8")
@@ -340,6 +407,11 @@ def generate_prompt(
 
     payload = json.dumps({"text": idea}, ensure_ascii=False).encode("utf-8")
 >>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+=======
+    enriched_idea = enrich_idea(idea)
+
+    payload = json.dumps({"text": enriched_idea}, ensure_ascii=False).encode("utf-8")
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
     req = Request(
         webhook_url,
         data=payload,
@@ -364,10 +436,14 @@ def generate_prompt(
     if not prompt:
         raise N8NPromptError(f"n8n no devolvio el campo output: {json.dumps(data, ensure_ascii=False)}")
 <<<<<<< HEAD
+<<<<<<< HEAD
     return clean_generated_prompt(prompt)
 =======
     return prompt
 >>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+=======
+    return clean_generated_prompt(prompt)
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
 
 def save_prompt(prompt: str, path: Path = DEFAULT_PROMPT_FILE) -> Path:
@@ -401,11 +477,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--idea-file",
 <<<<<<< HEAD
+<<<<<<< HEAD
         default=str(DEFAULT_IDEA_FILE),
         help=f"Archivo de texto cuyo contenido se usa como idea base. Default: {DEFAULT_IDEA_FILE}",
 =======
         help="Archivo de texto cuyo contenido se usa como idea base",
 >>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+=======
+        default=str(DEFAULT_IDEA_FILE),
+        help=f"Archivo de texto cuyo contenido se usa como idea base. Default: {DEFAULT_IDEA_FILE}",
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
     )
     parser.add_argument(
         "--webhook-url",

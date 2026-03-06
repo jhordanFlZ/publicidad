@@ -48,7 +48,10 @@ set "LOG=python %UTILS_DIR%\bat_logger.py"
 rem --- Datos ---
 set "PROMPT_FILE=%UTILS_DIR%\prontm.txt"
 set "PROMPT_SEED_FILE=%UTILS_DIR%\prompt_seed.txt"
+<<<<<<< HEAD
 set "POST_TEXT_FILE=%UTILS_DIR%\post_text.txt"
+=======
+>>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
 rem --- Ejecutables ---
 set "DICLOAK_EXE=C:\Program Files\DICloak\DICloak.exe"
