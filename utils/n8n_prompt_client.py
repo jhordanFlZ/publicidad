@@ -5,6 +5,7 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+<<<<<<< HEAD
 from service_rotation import rotate_service
 from logger import log_error, progress_bar
 
@@ -22,12 +23,19 @@ DEFAULT_BRAND_HINT = (
     "Bogota y Kennedy pueden existir como contexto sutil, pero nunca como protagonista visual principal. "
     "La composicion debe sentirse como una campana corporativa de alta gama, con jerarquia visual limpia, menos ruido y mejor direccion de arte."
 )
+=======
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_PROMPT_FILE = PROJECT_ROOT / "utils" / "prontm.txt"
+DEFAULT_WEBHOOK_URL = "https://n8n-dev.noyecode.com/webhook/py-prompt-imgs"
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
 
 
 class N8NPromptError(RuntimeError):
     pass
 
 
+<<<<<<< HEAD
 SERVICE_HASHTAGS = {
     "desarrollo a la medida": "#NoyeCode #DesarrolloALaMedida #SoftwareEmpresarial #Colombia",
     "automatizaciones empresariales": "#NoyeCode #AutomatizacionEmpresarial #Productividad #SoftwareEmpresarial",
@@ -301,6 +309,8 @@ def enrich_idea(idea: str) -> str:
     return f"{base}\n\nDirectrices internas para enriquecer la escena:\n- " + "\n- ".join(hints)
 
 
+=======
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
 def _read_json_response(resp: Any) -> dict[str, Any]:
     raw = resp.read().decode("utf-8", errors="replace").strip()
     if not raw:
@@ -322,9 +332,14 @@ def generate_prompt(
     idea = idea.strip()
     if not idea:
         raise ValueError("La idea base no puede estar vacia")
+<<<<<<< HEAD
     enriched_idea = enrich_idea(idea)
 
     payload = json.dumps({"text": enriched_idea}, ensure_ascii=False).encode("utf-8")
+=======
+
+    payload = json.dumps({"text": idea}, ensure_ascii=False).encode("utf-8")
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
     req = Request(
         webhook_url,
         data=payload,
@@ -348,7 +363,11 @@ def generate_prompt(
     prompt = str(data.get("output", "")).strip()
     if not prompt:
         raise N8NPromptError(f"n8n no devolvio el campo output: {json.dumps(data, ensure_ascii=False)}")
+<<<<<<< HEAD
     return clean_generated_prompt(prompt)
+=======
+    return prompt
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
 
 
 def save_prompt(prompt: str, path: Path = DEFAULT_PROMPT_FILE) -> Path:
@@ -381,8 +400,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--idea-file",
+<<<<<<< HEAD
         default=str(DEFAULT_IDEA_FILE),
         help=f"Archivo de texto cuyo contenido se usa como idea base. Default: {DEFAULT_IDEA_FILE}",
+=======
+        help="Archivo de texto cuyo contenido se usa como idea base",
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
     )
     parser.add_argument(
         "--webhook-url",
@@ -413,12 +436,18 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
+<<<<<<< HEAD
         if args.idea:
             idea = args.idea.strip()
         elif args.idea_file:
             idea = Path(args.idea_file).read_text(encoding="utf-8").strip()
         else:
             idea = ""
+=======
+        idea = args.idea
+        if args.idea_file:
+            idea = Path(args.idea_file).read_text(encoding="utf-8").strip()
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
         if not idea:
             raise ValueError("Debes enviar una idea o usar --idea-file")
 

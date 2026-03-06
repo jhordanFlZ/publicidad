@@ -25,13 +25,20 @@ set "FORCE_CDP_LAUNCHER_BAT=%CDP_DIR%\forzar_cdp_post_apertura.bat"
 set "GET_DEBUG_PORT_PS1=%CDP_DIR%\obtener_puerto_perfil_cdp.ps1"
 set "CHANGE_COUNT_PY=%PERFIL_DIR%\change_count.py"
 set "PROMPT_AUTOMATION_PY=%PROMPT_DIR%\page_pronmt.py"
+<<<<<<< HEAD
 set "DOWNLOAD_GENERATED_IMAGE_PY=%PROMPT_DIR%\download_generated_image.py"
 set "N8N_PROMPT_CLIENT_PY=%UTILS_DIR%\n8n_prompt_client.py"
 set "PUBLIC_IMG_PY=%ROOT_DIR%\n8n\public_img.py"
 set "N8N_POST_TEXT_CLIENT_PY=%UTILS_DIR%\n8n_post_text_client.py"
+<<<<<<< HEAD
 set "BOT_RUNNER_PY=%SERVER_DIR%\bot_runner.py"
 set "JOB_POLLER_PY=%SERVER_DIR%\job_poller.py"
 set "START_JOB_POLLER_BAT=%ROOT_DIR%\iniciar_poller.bat"
+=======
+=======
+set "N8N_PROMPT_CLIENT_PY=%UTILS_DIR%\n8n_prompt_client.py"
+>>>>>>> 7ca84d4 (conexion a bot contexto empresarial)
+>>>>>>> 309a748 (conexion a bot contexto empresarial)
 
 set "RUN_WITH_PROGRESS_PY=%UTILS_DIR%\run_with_progress.py"
 
