@@ -5,15 +5,25 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+from service_rotation import rotate_service
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PROMPT_FILE = PROJECT_ROOT / "utils" / "prontm.txt"
+DEFAULT_IDEA_FILE = PROJECT_ROOT / "utils" / "prompt_seed.txt"
 DEFAULT_WEBHOOK_URL = "https://n8n-dev.noyecode.com/webhook/py-prompt-imgs"
+DEFAULT_BRAND_HINT = (
+    "Pieza publicitaria para NoyeCode enfocada en captar clientes reales de software. "
+    "Debe verse premium, moderna, comercial, confiable y lista para campanas digitales. "
+    "El texto dentro de la imagen si es importante porque estas piezas son para redes sociales y captacion comercial. "
+    "Incluir copy comercial claro, CTA, web, WhatsApp y el servicio protagonista cuando el formato lo permita. "
+    "Evitar imagenes genericas, pantallas gigantes irreales, cascos VR innecesarios, slogans confusos o logos invasivos dentro de la imagen. "
+    "Bogota y Kennedy pueden existir como contexto sutil, pero nunca como protagonista visual principal."
+)
 
 
 class N8NPromptError(RuntimeError):
     pass
-
 
 
 SERVICE_HASHTAGS = {
@@ -28,14 +38,29 @@ SERVICE_HASHTAGS = {
 
 def looks_like_generic_service_seed(text: str) -> bool:
     lower = text.lower()
-<<<<<<< HEAD
     markers = [
         "servicios que si se deben promocionar",
         "preferencia de enfoque",
         "elegir una de estas lineas para la pieza visual",
     ]
     service_hits = sum(
-=======
+        1
+        for token in (
+            "desarrollo a la medida",
+            "automatizaciones empresariales",
+            "software legacy",
+            "rpas nativos",
+            "desarrollo android",
+            "desarrollo desktop",
+        )
+        if token in lower
+    )
+    return any(marker in lower for marker in markers) or service_hits >= 3
+
+
+def clean_generated_prompt(prompt: str) -> str:
+    text = " ".join(str(prompt).strip().split())
+    lower = text.lower()
 
     markers = ["prompt:", "prompt final:", "prompt para imagen:"]
     for marker in markers:
@@ -109,13 +134,21 @@ def detect_primary_service(text: str) -> str:
         return "desarrollo desktop"
     if "automatiza" in lower or "automatizacion" in lower or "automatizaciones" in lower:
         return "automatizaciones empresariales"
-    return "desarrollo a la medida"
+    return ""
+
+
+def select_primary_service(text: str) -> str:
+    if looks_like_generic_service_seed(text):
+        return rotate_service()
+    detected = detect_primary_service(text)
+    if detected:
+        return detected
+    return rotate_service()
 
 
 def enrich_idea(idea: str) -> str:
     base = " ".join(idea.strip().split())
-    lower = base.lower()
-    primary_service = detect_primary_service(base)
+    primary_service = select_primary_service(base)
     hints: list[str] = [DEFAULT_BRAND_HINT]
 
     hints.append(
@@ -145,7 +178,7 @@ def enrich_idea(idea: str) -> str:
         f"El nombre del servicio destacado dentro del arte debe ser exactamente: {primary_service}."
     )
     hints.append(
-        "Cuando encaje con formato de redes, incluir hashtags comerciales discretos como #NoyeCode #DesarrolloALaMedida #AutomatizacionEmpresarial #SoftwareEmpresarial #Bogota #Colombia."
+        f"Cuando encaje con formato de redes, incluir hashtags comerciales discretos como {SERVICE_HASHTAGS.get(primary_service, '#NoyeCode #SoftwareEmpresarial #Colombia')}."
     )
     hints.append(
         "Si se listan servicios complementarios, deben ir en segundo nivel visual y nunca opacar el servicio principal."
@@ -169,7 +202,7 @@ def enrich_idea(idea: str) -> str:
         "No repetir siempre la misma composicion de oficina con mesa y dashboard. Cambiar encuadre, tipo de escena, foco visual y ambiente segun el objetivo comercial."
     )
 
-    if "desarrollo a la medida" in lower or "a la medida" in lower:
+    if primary_service == "desarrollo a la medida":
         hints.append(
             "Servicio clave: desarrollo a la medida. "
             "Mostrar una solucion de software creada especificamente para una empresa: "
@@ -190,29 +223,49 @@ def enrich_idea(idea: str) -> str:
             "El texto recomendado dentro del arte debe resaltar ideas como: desarrollo a la medida, software personalizado, escalable, soporte experto, contactanos por WhatsApp, visita noyecode.com."
         )
 
-    if "automatiza" in lower or "automatizacion" in lower or "automatizaciones" in lower:
+    if primary_service == "automatizaciones empresariales":
         hints.append(
             "Si la pieza es sobre automatizaciones, reflejar eficiencia operativa, integraciones entre sistemas, "
             "flujos conectados, paneles de control y ahorro de tiempo para empresas."
         )
+        hints.append(
+            "Variar la escena entre procesos empresariales, equipos operando con menos friccion, tableros reales, integraciones activas y resultados visibles de ahorro de tiempo."
+        )
 
-    if "android" in lower:
+    if primary_service == "desarrollo android":
         hints.append(
             "Si la pieza es sobre desarrollo Android, mostrar app movil profesional en uso real, "
             "interfaz pulida, experiencia de usuario clara y contexto comercial."
         )
+        hints.append(
+            "Evitar la oficina tradicional como unica escena. Priorizar manos usando el movil, pantallas reales de app y contexto de negocio o ventas."
+        )
 
-    if "desktop" in lower or "desk" in lower:
+    if primary_service == "desarrollo desktop":
         hints.append(
             "Si la pieza es sobre desarrollo desktop, mostrar una aplicacion empresarial robusta en escritorio, "
             "paneles limpios, productividad, control operativo y entorno profesional."
         )
+        hints.append(
+            "Cambiar la escena hacia uso de software en operacion, control de procesos, estaciones de trabajo y valor empresarial medible."
+        )
 
-    if "legacy" in lower or "sistema legacy" in lower or "modernizacion" in lower or "actualizacion de sistema" in lower:
+    if primary_service == "modernizacion de software legacy":
         hints.append(
             "Si la pieza trata de modernizacion legacy, representar evolucion tecnologica: "
             "antes y despues sutil, software antiguo transformandose en plataforma moderna, "
             "sin verse caotico ni demasiado tecnico."
+        )
+        hints.append(
+            "Enfatizar migracion, actualizacion, continuidad operativa y modernizacion visual del sistema."
+        )
+
+    if primary_service == "rpas nativos":
+        hints.append(
+            "Si la pieza es sobre RPAs nativos, mostrar automatizacion de tareas repetitivas en flujos empresariales reales, con tableros claros, procesos conectados y sensacion de eficiencia operativa."
+        )
+        hints.append(
+            "Evitar robots humanoides. Representar el RPA como inteligencia operativa aplicada al negocio."
         )
 
     return f"{base}\n\nDirectrices internas para enriquecer la escena:\n- " + "\n- ".join(hints)
@@ -237,11 +290,11 @@ def generate_prompt(
     timeout: int = 60,
 ) -> str:
     idea = idea.strip()
->>>>>>> 6f30f6f (seleccionar cuenta de chapgpt)
     if not idea:
         raise ValueError("La idea base no puede estar vacia")
+    enriched_idea = enrich_idea(idea)
 
-    payload = json.dumps({"text": idea}, ensure_ascii=False).encode("utf-8")
+    payload = json.dumps({"text": enriched_idea}, ensure_ascii=False).encode("utf-8")
     req = Request(
         webhook_url,
         data=payload,
@@ -265,7 +318,7 @@ def generate_prompt(
     prompt = str(data.get("output", "")).strip()
     if not prompt:
         raise N8NPromptError(f"n8n no devolvio el campo output: {json.dumps(data, ensure_ascii=False)}")
-    return prompt
+    return clean_generated_prompt(prompt)
 
 
 def save_prompt(prompt: str, path: Path = DEFAULT_PROMPT_FILE) -> Path:
@@ -298,7 +351,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--idea-file",
-        help="Archivo de texto cuyo contenido se usa como idea base",
+        default=str(DEFAULT_IDEA_FILE),
+        help=f"Archivo de texto cuyo contenido se usa como idea base. Default: {DEFAULT_IDEA_FILE}",
     )
     parser.add_argument(
         "--webhook-url",
