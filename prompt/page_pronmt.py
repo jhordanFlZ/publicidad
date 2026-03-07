@@ -27,12 +27,9 @@ DEFAULT_PORT = 9225
 PROMPT_LOCK_FILE = PROJECT_ROOT / ".prompt_last_send.json"
 PROMPT_DEDUP_WINDOW_SEC = 90
 NO_IMAGE_TOKENS_MARKER = "Sin tokens para imgs."
-<<<<<<< HEAD
 PROMPT_STATUS_SUCCESS = "success"
 PROMPT_STATUS_NO_IMAGE_TOKENS = "no_image_tokens"
 MAX_ACCOUNT_ROTATION_ATTEMPTS = 20
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
 
 
 def read_prompt() -> str:
@@ -137,11 +134,7 @@ def trigger_change_count(reason: str = "no_image_tokens") -> None:
         log_warn(f"change_count.py termino con codigo {result.returncode}")
 
 
-<<<<<<< HEAD
 def run_prompt_paste(cdp_port: int) -> str:
-=======
-def run_prompt_paste(cdp_port: int) -> None:
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     js = r"""
 const fs = require('fs');
 const { chromium } = require('playwright');
@@ -164,145 +157,6 @@ const { chromium } = require('playwright');
       return x.startsWith(`http://127.0.0.1:${cdpPort}/json`);
     };
 
-<<<<<<< HEAD
-    const getPageSignals = async (targetPage) => {
-      try {
-        return await targetPage.evaluate(() => {
-          const editor = document.querySelector('div#prompt-textarea[contenteditable="true"], #prompt-textarea[contenteditable="true"]');
-          const style = editor ? window.getComputedStyle(editor) : null;
-          const rect = editor ? editor.getBoundingClientRect() : null;
-          return {
-            readyState: document.readyState || '',
-            visibilityState: document.visibilityState || '',
-            hasFocus: typeof document.hasFocus === 'function' ? document.hasFocus() : false,
-            composerReady: !!(
-              editor &&
-              rect &&
-              rect.width > 50 &&
-              rect.height > 20 &&
-              style &&
-              style.display !== 'none' &&
-              style.visibility !== 'hidden'
-            ),
-          };
-        });
-      } catch {
-        return {
-          readyState: '',
-          visibilityState: '',
-          hasFocus: false,
-          composerReady: false,
-        };
-      }
-    };
-
-    const waitForSessionWindowsStable = async (timeoutMs = 45000, settleMs = 4000, pollMs = 500, requireSingleChat = false) => {
-      const deadline = Date.now() + timeoutMs;
-      let lastSignature = '';
-      let stableSince = 0;
-
-      while (Date.now() < deadline) {
-        const pages = context.pages().filter(p => !p.isClosed());
-        const chatPages = pages.filter(p => isChatPage(p.url()));
-        const debugPages = pages.filter(p => isDebugPage(p.url()));
-
-        const chatSignals = [];
-        for (const chatPage of chatPages) {
-          const signals = await getPageSignals(chatPage);
-          chatSignals.push({
-            url: chatPage.url() || '',
-            readyState: signals.readyState || '',
-            visibilityState: signals.visibilityState || '',
-            hasFocus: !!signals.hasFocus,
-            composerReady: !!signals.composerReady,
-          });
-        }
-
-        const signature = JSON.stringify({
-          chatCount: chatPages.length,
-          debugCount: debugPages.length,
-          chatSignals,
-        });
-
-        const hasReadyChatPage = chatSignals.some((item) => item.composerReady);
-        const hasDebugPage = debugPages.length > 0;
-        const singleChatCondition = !requireSingleChat || chatPages.length === 1;
-
-        if (signature === lastSignature && hasReadyChatPage && hasDebugPage && singleChatCondition) {
-          if (!stableSince) {
-            stableSince = Date.now();
-          }
-          if ((Date.now() - stableSince) >= settleMs) {
-            console.log(`SESSION_WINDOWS_READY: chats=${chatPages.length} debug=${debugPages.length}`);
-            return true;
-          }
-        } else {
-          lastSignature = signature;
-          stableSince = 0;
-        }
-
-        await page.waitForTimeout(pollMs);
-      }
-      return false;
-    };
-
-    const ensureSingleChatAndDebugPage = async (preferredPage) => {
-      let keepPage = preferredPage || await pickBestChatPage();
-      if (!keepPage) {
-        keepPage = await context.newPage();
-        await keepPage.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded' });
-      }
-
-      let debugPage = context.pages().find(p => isDebugPage(p.url()));
-      if (!debugPage) {
-        debugPage = await context.newPage();
-      }
-
-      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' }).catch(() => {});
-
-      const pages = context.pages().filter(p => !p.isClosed());
-      for (const candidate of pages) {
-        if (candidate === keepPage || candidate === debugPage) continue;
-        const candidateUrl = candidate.url() || '';
-        if (
-          isChatPage(candidateUrl) ||
-          isDebugPage(candidateUrl) ||
-          candidateUrl === 'about:blank' ||
-          !candidateUrl
-        ) {
-          await candidate.close({ runBeforeUnload: false }).catch(() => {});
-        }
-      }
-
-      await keepPage.bringToFront().catch(() => {});
-      await debugPage.bringToFront().catch(() => {});
-      await keepPage.bringToFront().catch(() => {});
-      return { keepPage, debugPage };
-    };
-
-    const pickBestChatPage = async () => {
-      const chatPages = context.pages().filter(p => isChatPage(p.url()));
-      if (!chatPages.length) return null;
-      const ranked = [];
-      for (const candidate of chatPages) {
-        const url = candidate.url() || '';
-        const signals = await getPageSignals(candidate);
-        let score = 0;
-        if (/^https:\/\/chatgpt\.com\/c\//i.test(url)) score += 30;
-        else if (/^https:\/\/chatgpt\.com\/$/i.test(url)) score += 20;
-        else score += 10;
-        if (signals.composerReady) score += 50;
-        if (signals.visibilityState === 'visible') score += 10;
-        if (signals.hasFocus) score += 10;
-        if (signals.readyState === 'complete') score += 5;
-        ranked.push({ page: candidate, score });
-      }
-      ranked.sort((a, b) => b.score - a.score);
-      return ranked[0]?.page || chatPages[chatPages.length - 1];
-    };
-
-    let page = await pickBestChatPage();
-=======
     const pickBestChatPage = () => {
       const chatPages = context.pages().filter(p => isChatPage(p.url()));
       if (!chatPages.length) return null;
@@ -319,33 +173,12 @@ const { chromium } = require('playwright');
     };
 
     let page = pickBestChatPage();
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     if (!page) {
       page = await context.newPage();
       await page.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded' });
     }
 
     await page.bringToFront();
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    let sessionPages = await ensureSingleChatAndDebugPage(page);
-    page = sessionPages.keepPage;
-
-    await waitForSessionWindowsStable(45000, 4000, 500, true);
-
-    const stabilizedPage = await pickBestChatPage();
-    if (stabilizedPage) {
-      page = stabilizedPage;
-    }
-    sessionPages = await ensureSingleChatAndDebugPage(page);
-    page = sessionPages.keepPage;
-    await page.bringToFront();
-=======
-    await page.goto('https://chatgpt.com/', { waitUntil: 'domcontentloaded' });
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
 
     const selectors = [
       'div#prompt-textarea[contenteditable="true"]',
@@ -365,10 +198,6 @@ const { chromium } = require('playwright');
         .replace(/\s+/g, ' ')
         .trim();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     const composerReadyInPage = async () => {
       return await page.evaluate(() => {
         const editor = document.querySelector('div#prompt-textarea[contenteditable="true"], #prompt-textarea[contenteditable="true"]');
@@ -385,11 +214,6 @@ const { chromium } = require('playwright');
       }).catch(() => false);
     };
 
-<<<<<<< HEAD
-=======
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     const waitForComposerReady = async (timeoutMs = 30000) => {
       await page.waitForFunction(() => {
         const editor = document.querySelector('div#prompt-textarea[contenteditable="true"], #prompt-textarea[contenteditable="true"]');
@@ -406,36 +230,6 @@ const { chromium } = require('playwright');
       }, { timeout: timeoutMs });
     };
 
-<<<<<<< HEAD
-    const disableAdvancedResearchMode = async () => {
-      const candidates = [
-        page.getByRole('button', { name: /Investigaci[oó]n avanzada, pulsa para quitar/i }).first(),
-        page.getByRole('button', { name: /Advanced research, click to remove/i }).first(),
-      ];
-
-      for (const candidate of candidates) {
-        const visible = await candidate.isVisible().catch(() => false);
-        if (!visible) continue;
-        await candidate.scrollIntoViewIfNeeded().catch(() => {});
-        try {
-          await candidate.click({ timeout: 5000 });
-        } catch {
-          const handle = await candidate.elementHandle();
-          if (handle) {
-            await page.evaluate((el) => el.click(), handle);
-          } else {
-            continue;
-          }
-        }
-        await page.waitForTimeout(600);
-        console.log('ADVANCED_RESEARCH_OFF');
-        return true;
-      }
-      return false;
-    };
-
-=======
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
     const findVisiblePromptInput = async (timeoutMs = 15000) => {
       const deadline = Date.now() + timeoutMs;
       while (Date.now() < deadline) {
@@ -455,10 +249,6 @@ const { chromium } = require('playwright');
       return null;
     };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     try {
       await waitForComposerReady();
     } catch {
@@ -474,14 +264,6 @@ const { chromium } = require('playwright');
       }
       await waitForComposerReady(45000);
     }
-<<<<<<< HEAD
-    await disableAdvancedResearchMode();
-
-=======
-    await waitForComposerReady();
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
-=======
->>>>>>> 40266b7 (conexion a bot contexto empresarial more time)
     const target = await findVisiblePromptInput();
     if (!target) throw new Error('No se encontro input visible de prompt');
 
@@ -512,211 +294,10 @@ const { chromium } = require('playwright');
         }
       }, handle);
     };
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-    const clearPromptSurface = async () => {
-      const handle = await target.elementHandle();
-      if (!handle) throw new Error('No se pudo resolver el editor de prompt');
-=======
-    const normalizeText = (value) =>
-      String(value || '')
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-=======
 
     const clearPromptSurface = async () => {
       const handle = await target.elementHandle();
       if (!handle) throw new Error('No se pudo resolver el editor de prompt');
-
-      await page.evaluate((el) => {
-        el.focus();
-        if (el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement) {
-          el.value = '';
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          return;
-        }
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }, handle);
-      await page.keyboard.press('Backspace');
-    };
-
-    const waitForPromptRegistered = async (expectedPrompt, timeoutMs = 20000) => {
-      const expectedSample = normalizeText(expectedPrompt).slice(0, 120);
-      const deadline = Date.now() + timeoutMs;
-      while (Date.now() < deadline) {
-        const currentText = normalizeText(await getPromptSurfaceText());
-        if (currentText && currentText.includes(expectedSample)) {
-          return true;
-        }
-        await page.waitForTimeout(200);
-      }
-      return false;
-    };
-
-    const promptExistsAsUserTurn = async (expectedPrompt) => {
-      const expectedSample = normalizeText(expectedPrompt).slice(0, 120);
-      if (!expectedSample) return false;
-      return await page.evaluate((sample) => {
-        const headings = Array.from(document.querySelectorAll('article h5'));
-        const userTurns = headings
-          .filter((h) => /tu dijiste/i.test(h.innerText || ''))
-          .map((h) => h.closest('article'))
-          .filter(Boolean);
-        const lastTurn = userTurns[userTurns.length - 1];
-        if (!lastTurn) return false;
-        const text = String(lastTurn.innerText || '')
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-z0-9\\s]/g, ' ')
-          .replace(/\\s+/g, ' ')
-          .trim();
-        return text.includes(sample);
-      }, expectedSample).catch(() => false);
-    };
-
-    const waitForSendButtonReady = async (timeoutMs = 12000) => {
-      const deadline = Date.now() + timeoutMs;
-      while (Date.now() < deadline) {
-        const btn = page.locator('button[data-testid="send-button"]').first();
-        const visible = await btn.isVisible().catch(() => false);
-        const enabled = await btn.isEnabled().catch(() => false);
-        if (visible && enabled) {
-          return btn;
-        }
-        await page.waitForTimeout(200);
-      }
-      return null;
-    };
-
-    const waitForSubmissionStart = async (timeoutMs = 8000) => {
-      const deadline = Date.now() + timeoutMs;
-      while (Date.now() < deadline) {
-        const currentText = normalizeText(await getPromptSurfaceText());
-        if (!currentText) {
-          return true;
-        }
-        const stopSignals = [
-          page.getByRole('button', { name: /detener|stop/i }),
-          page.locator('button[data-testid="stop-button"]').first(),
-        ];
-        for (const signal of stopSignals) {
-          if (await signal.first().isVisible().catch(() => false)) {
-            return true;
-          }
-        }
-        await page.waitForTimeout(250);
-      }
-      return false;
-    };
-
-    const injectPrompt = async () => {
-      await focusPromptSurface();
-      await clearPromptSurface();
-      await focusPromptSurface();
-      await page.keyboard.insertText(prompt);
-    };
-
-    await injectPrompt();
-
-    let promptRegistered = await waitForPromptRegistered(prompt);
-    if (!promptRegistered) {
-      await page.waitForTimeout(1500);
-      await injectPrompt();
-      promptRegistered = await waitForPromptRegistered(prompt, 25000);
-    }
-    if (!promptRegistered) {
-      throw new Error('ChatGPT no registro el prompt en el editor visible');
-    }
-
-    const sendBtn = await waitForSendButtonReady();
-    let submitted = false;
-    if (sendBtn) {
-      await sendBtn.scrollIntoViewIfNeeded().catch(() => {});
-      try {
-        await sendBtn.click({ timeout: 5000 });
-      } catch {
-        const handle = await sendBtn.elementHandle();
-        if (handle) {
-          await page.evaluate((el) => el.click(), handle);
-        }
-      }
-      submitted = await waitForSubmissionStart();
-    }
-
-    if (!submitted) {
-      await focusPromptSurface().catch(() => {});
-      await page.keyboard.press('Enter');
-      submitted = await waitForSubmissionStart();
-    }
-
-    if (!submitted) {
-      submitted = await promptExistsAsUserTurn(prompt);
-    }
-
-    if (!submitted) {
-      throw new Error('No se confirmo el envio del prompt');
-    }
->>>>>>> 57bc22b (conexion a bot contexto empresarial more time)
-
-    const noImageTokenPhrases = [
-      'has alcanzado tu limite de creacion de imagenes',
-      'el limite se restablece',
-      'youve hit the team plan limit for image generations requests',
-      'you can create more images when the limit resets',
-      'no pude invocar la herramienta de generacion de imagenes',
-      'cannot generate more images',
-      'image generation limit'
-    ];
-
-    const waitForNoImageTokensAlert = async (timeoutMs = 12000) => {
-      const domSignals = [
-        page.getByRole('heading', { name: /Has alcanzado tu límite de creación de imágenes/i }),
-        page.getByRole('button', { name: /notificar al administrador/i }),
-        page.getByText(/You've hit the team plan limit for image generations requests/i),
-        page.getByText(/No pude invocar la herramienta de generación de imágenes/i),
-      ];
-      const deadline = Date.now() + timeoutMs;
-      while (Date.now() < deadline) {
-        for (const signal of domSignals) {
-          const visible = await signal.first().isVisible().catch(() => false);
-          if (visible) {
-            return true;
-          }
-        }
-
-        const bodyText = normalizeText(await page.evaluate(() => document.body?.innerText || ''));
-        if (noImageTokenPhrases.some((phrase) => bodyText.includes(phrase))) {
-          return true;
-        }
-        await page.waitForTimeout(500);
-      }
-      return false;
-    };
-
-    if (await waitForNoImageTokensAlert()) {
-      console.log('Sin tokens para imgs.');
-    }
-
-    // Asegura una pestana de debug visible y limpia el resto.
-    let debugPage = context.pages().find(p => isDebugPage(p.url()));
-    if (!debugPage) {
-      debugPage = await context.newPage();
-      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
-    } else {
-      await debugPage.bringToFront();
-      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
-    }
->>>>>>> 09ac57c (conexion a bot contexto empresarial, correcion del promt)
 
       await page.evaluate((el) => {
         el.focus();
@@ -975,8 +556,27 @@ const { chromium } = require('playwright');
       console.log('Sin tokens para imgs.');
     }
 
-    const finalSessionPages = await ensureSingleChatAndDebugPage(page);
-    page = finalSessionPages.keepPage;
+    // Asegura una pestana de debug visible y limpia el resto.
+    let debugPage = context.pages().find(p => isDebugPage(p.url()));
+    if (!debugPage) {
+      debugPage = await context.newPage();
+      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
+    } else {
+      await debugPage.bringToFront();
+      await debugPage.goto(debugUrl, { waitUntil: 'domcontentloaded' });
+    }
+
+    const allPages = context.pages();
+    for (const p of allPages) {
+      if (p === page || p === debugPage) continue;
+      const u = p.url();
+      if (isChatPage(u) || isDebugPage(u) || !u || u === 'about:blank') {
+        await p.close({ runBeforeUnload: false }).catch(() => {});
+      } else {
+        await p.close({ runBeforeUnload: false }).catch(() => {});
+      }
+    }
+
     await page.bringToFront();
 
     console.log('PROMPT_PEGADO_OK');
@@ -1002,9 +602,6 @@ const { chromium } = require('playwright');
         print(result.stdout.strip())
     if result.stderr.strip():
         print(result.stderr.strip())
-
-    if NO_IMAGE_TOKENS_MARKER in result.stdout:
-        trigger_change_count("no_image_tokens")
 
     if result.returncode != 0 or "PROMPT_PEGADO_OK" not in result.stdout:
         raise RuntimeError("No se pudo pegar el prompt en ChatGPT")
