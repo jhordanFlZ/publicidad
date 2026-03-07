@@ -14,6 +14,7 @@ set "SERVER_DIR=%ROOT_DIR%\server"
 set "UTILS_DIR=%ROOT_DIR%\utils"
 set "DEBUG_DIR=%ROOT_DIR%\debug"
 set "DOCS_DIR=%ROOT_DIR%\docs"
+set "IMG_PUBLICITARIAS_DIR=%ROOT_DIR%\img_publicitarias"
 
 rem --- Scripts ---
 set "KILLER_PS1=%INICIO_DIR%\cerrar_dicloak_avanzado.ps1"
@@ -22,10 +23,17 @@ set "FORCE_OPEN_JS=%PERFIL_DIR%\force_open_profile_cdp.js"
 set "FORCE_CDP_PS1=%CDP_DIR%\forzar_cdp_perfil_dicloak.ps1"
 set "FORCE_CDP_LAUNCHER_BAT=%CDP_DIR%\forzar_cdp_post_apertura.bat"
 set "GET_DEBUG_PORT_PS1=%CDP_DIR%\obtener_puerto_perfil_cdp.ps1"
+set "CHANGE_COUNT_PY=%PERFIL_DIR%\change_count.py"
 set "PROMPT_AUTOMATION_PY=%PROMPT_DIR%\page_pronmt.py"
+set "DOWNLOAD_GENERATED_IMAGE_PY=%PROMPT_DIR%\download_generated_image.py"
+set "N8N_PROMPT_CLIENT_PY=%UTILS_DIR%\n8n_prompt_client.py"
+set "PUBLIC_IMG_PY=%ROOT_DIR%\n8n\public_img.py"
+set "N8N_POST_TEXT_CLIENT_PY=%UTILS_DIR%\n8n_post_text_client.py"
 
 rem --- Datos ---
 set "PROMPT_FILE=%UTILS_DIR%\prontm.txt"
+set "PROMPT_SEED_FILE=%UTILS_DIR%\prompt_seed.txt"
+set "POST_TEXT_FILE=%UTILS_DIR%\post_text.txt"
 
 rem --- Ejecutables ---
 set "DICLOAK_EXE=C:\Program Files\DICloak\DICloak.exe"
