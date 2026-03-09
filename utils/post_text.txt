@@ -1,5 +1,13 @@
+<<<<<<< Updated upstream
 Desarrollo Desktop: Soluciones Personalizadas para el Éxito Empresarial
 
 Mejora tu productividad con aplicaciones robustas y control operativo total, diseñadas para adaptarse a tus necesidades específicas. Destaca tus operaciones con interfaces limpias y fáciles de usar, permitiendo que tus empleados se enfoquen en lo que importa: crecer y innovar.
 
 #NoyeCode #DesarrolloDesktop #SoftwareEmpresarial #Productividad
+=======
+"Desarrolla aplicaciones móviles Android de alta calidad que impulsan el crecimiento de tu negocio. Nuestras soluciones personalizadas y experiencias de usuario intuitivas te permiten conectar con tus clientes de manera efectiva. Confía en NoyeCode para llevar tu marca al siguiente nivel.
+
+¡Conecta con nosotros para discutir tu proyecto: +57 301 385 9952 o visite noyecode.com
+
+#NoyeCode #DesarrolloAndroid #SoluionesDigitales #CrecimientoEmpresarial #NuevasOportunidades"
+>>>>>>> Stashed changes
